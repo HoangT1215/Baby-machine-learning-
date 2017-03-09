@@ -55,12 +55,36 @@ print('Scatter Matrix:\n', scatter_matrix)
 cov_mat = np.cov([all_samples[0,:],all_samples[1,:],all_samples[2,:]])
 print('Covariance Matrix:\n', cov_mat)
 
-#Step 4, computing eigenvalues
+#Step 4, computing eigenvectors and corresponding eigenvalues
 eig_val_sc, eig_vec_sc = np.linalg.eig(scatter_matrix)
 eig_val_cov, eig_vec_cov = np.linalg.eig(cov_mat)
 
+#linalg.eig will return the eigenvalues and eigenvectors correspondingly
+
+#Step 5, sort the eigenvectors by decreasing eigenvalues
+
+#Make a list of (eigenvalue, eigenvector) tuples and sort the (eigenvalue, eigenvector) tuples from high to low
+eig_pairs = [(np.abs(eig_val_sc[i]), eig_vec_sc[:,i]) for i in range(len(eig_val_sc))]
+eig_pairs.sort(key=lambda x: x[0], reverse=True)
+
+#Good thing that Python allow sorting by keys
+
+#Step 5b, choose k eigenvectors with largest eigenvalues
+k = int(input())
+matrix_w = [eig_pairs[i] for i in range(k)]
+
+#Step 6, transforming the samples onto the new subspace
+transformed = matrix_w.T.dot(all_samples)
+assert transformed.shape == (2,40), "The matrix is not 2x40 dimensional."
 
 #visualize
-def vector_viz(vec_mat):
-	plt.plot(vec_mat)
-	plt.show()
+plt.plot(transformed[0,0:20], transformed[1,0:20], 'o', markersize=7, color='blue', alpha=0.5, label='class1')
+plt.plot(transformed[0,20:40], transformed[1,20:40], '^', markersize=7, color='red', alpha=0.5, label='class2')
+plt.xlim([-4,4])
+plt.ylim([-4,4])
+plt.xlabel('x_values')
+plt.ylabel('y_values')
+plt.legend()
+plt.title('Transformed samples with class labels')
+
+plt.show()

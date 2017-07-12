@@ -1,3 +1,4 @@
+from __future__ import division
 import pandas as pd
 import numpy as np
 import scipy
@@ -6,6 +7,7 @@ from sklearn import preprocessing
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import matplotlib.pyplot as plt
 
 #read data
@@ -25,9 +27,22 @@ df = auto.drop('origin', 1)
 df = df.drop('name', 1)
 
 #task a
-mpg = auto['mpg']
-horse_power = auto['horsepower']
+mpg = df['mpg']
+horse_power = df['horsepower']
 horse_power = horse_power.convert_objects(convert_numeric=True) # convert to float64
+
+def plotauto(df1,df2):
+	# plot the data
+	plt.scatter(df1,df2)
+	plt.show()
+
+def accuracy(dat):
+	match = 0
+	for i in range(len(dat)):
+		if dat[i] == mpg01[i]:
+			match += 1
+	acc = float(match/len(dat))
+	return acc
 
 def task_a():
 	mpg01 = []
@@ -46,41 +61,62 @@ def task_b():
 	print("Pearson's r value:", mpg.corr(horse_power))
 	# correlation matrix
 	corr = df.corr() # df is from auto
+	print(corr)
 	sns.heatmap(corr, 
             xticklabels=corr.columns.values,
             yticklabels=corr.columns.values)
 	# reference: https://stackoverflow.com/questions/29432629/correlation-matrix-using-pandas
 
-	# plot the data
-	plt.scatter(mpg,horse_power)
-	plt.xlabel('Gas mileage')
-	plt.ylabel('Horse power')
-	plt.show()
+'''
+task b findings:
+mpg is most correlated with weight, displacement and cylinders
+'''
 
-	# assess accuracy
-
-def task_c():
-	auto_test, auto_train = train_test_split(df, test_size = 0.2, random_state = 42)
+def task_c(data):
+	# splitting test data and training data
+	auto_test, auto_train = train_test_split(data, test_size = 0.2, random_state = 42)
+	return (auto_test,auto_train)
 	
-def task_d():
+def task_d(train,test):
 	clf = LinearDiscriminantAnalysis()
-	pass
+	x = np.array(train)
+	y = np.array(test)
+	clf.fit(x,trainmpg01)
+	result = clf.predict(y)
+	error = 0
+	for i in range(len(testmpg01)):
+		if (testmpg01[i] != result[i]):
+			error += 1
+	print(error/len(result))
 
-def task_e():
-	pass
+def task_e(train,test):
+	clf = QuadraticDiscriminantAnalysis()
+	x = np.array(train)
+	y = np.array(test)
+	clf.fit(x,trainmpg01)
+	result = clf.predict(y)
+	error = 0
+	for i in range(len(testmpg01)):
+		if (testmpg01[i] != result[i]):
+			error += 1
+	print(error/len(result))
+
 
 def task_f():
+	# perform logistics regression to predict mpg01 and get test error
+
 	pass
 
 def train(dat):
 	pass
 
-def accuracy(dat):
-	match = 0
-	for i in range(len(dat)):
-		if dat[i] == mpg01[i]:
-			match += 1
-	acc = float(match/len(dat))
-	return acc
-
 #--- main program
+df['mpg01'] = task_a()
+data_d = df.drop('mpg',1)
+data_d = data_d.drop('acceleration',1)
+data_d = data_d.drop('horsepower',1)
+test_data, train_data = task_c(data_d)
+trainmpg01 = np.array(train_data['mpg01'])
+testmpg01 = np.array(test_data['mpg01'])
+task_d(train_data,test_data)
+task_e(train_data,test_data)

@@ -8,8 +8,8 @@ You can get the 6th edition of ISLR here: http://www-bcf.usc.edu/~gareth/ISL/ISL
 External material for reference:https://github.com/asadoughi/stat-learning__
 
 ## Open projects
-- Solving ISLR using Python__
-- Data visualization__
-- Trading indicator cross correlating__
-- Implementing financial-hacker model__
+- Solving ISLR using Python
+- Data visualization
+- Trading indicator cross correlating
+- Implementing financial-hacker model
 

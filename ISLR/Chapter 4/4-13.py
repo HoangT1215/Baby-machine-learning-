@@ -1,3 +1,4 @@
+from __future__ import division
 import pandas as pd
 import numpy as np
 import scipy
@@ -12,6 +13,11 @@ import matplotlib.pyplot as plt
 Goal:
 - Predict whether a given suburb has a higher crime rate than the median (binary classifying problem)
 - Testing predictive power of models
+
+Data:
+Index([u'crim', u'zn', u'indus', u'chas', u'nox', u'rm', u'age', u'dis',
+       u'rad', u'tax', u'ptratio', u'black', u'lstat', u'medv'],
+      dtype='object')
 '''
 
 #read data
@@ -19,8 +25,16 @@ boston = pd.read_csv('../Data/Boston.csv')
 print(boston.columns)
 
 #plotting
-def plotboston():
-	pass
+def plotboston(df1,df2):
+	plt.scatter(df1,df2)
+	plt.show()
+
+def corrtable():
+	corr = boston.corr()
+	sns.heatmap(corr, 
+            xticklabels=corr.columns.values,
+            yticklabels=corr.columns.values)
+	sns.plt.show()
 
 #applying models
 def knearest():
@@ -28,3 +42,9 @@ def knearest():
 
 def LDA():
 	pass
+
+#--- main program
+med = np.median(boston['crim'])
+print 'Median crime:', med
+corrtable()
+

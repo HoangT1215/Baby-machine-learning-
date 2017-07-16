@@ -4,6 +4,8 @@ import numpy as np
 import scipy
 import seaborn as sns
 from sklearn import preprocessing
+from sklearn import neighbors
+from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -61,10 +63,10 @@ def task_b():
 	print("Pearson's r value:", mpg.corr(horse_power))
 	# correlation matrix
 	corr = df.corr() # df is from auto
-	print(corr)
 	sns.heatmap(corr, 
             xticklabels=corr.columns.values,
             yticklabels=corr.columns.values)
+	sns.plt.show()
 	# reference: https://stackoverflow.com/questions/29432629/correlation-matrix-using-pandas
 
 '''
@@ -102,16 +104,34 @@ def task_e(train,test):
 	print(error/len(result))
 
 
-def task_f():
+def task_f(train,test):
 	# perform logistics regression to predict mpg01 and get test error
+	reg = LogisticRegression()
+	train = np.array(train)
+	test = np.array(test)
+	reg.fit(train,trainmpg01)
+	result = reg.predict(test)
+	error = 0
+	for i in range(len(testmpg01)):
+		if (testmpg01[i] != result[i]):
+			error += 1
+	print(error/len(result))
 
-	pass
-
-def train(dat):
-	pass
+def task_g(train,test):
+	knn = neighbors.KNeighborsClassifier()
+	train = np.array(train)
+	test = np.array(test)
+	knn.fit(train,trainmpg01)
+	result = knn.predict(test)
+	error = 0
+	for i in range(len(testmpg01)):
+		if (testmpg01[i] != result[i]):
+			error += 1
+	print(error/len(result))
 
 #--- main program
 df['mpg01'] = task_a()
+task_b()
 data_d = df.drop('mpg',1)
 data_d = data_d.drop('acceleration',1)
 data_d = data_d.drop('horsepower',1)
@@ -120,3 +140,5 @@ trainmpg01 = np.array(train_data['mpg01'])
 testmpg01 = np.array(test_data['mpg01'])
 task_d(train_data,test_data)
 task_e(train_data,test_data)
+task_f(train_data,test_data)
+task_g(train_data,test_data)
